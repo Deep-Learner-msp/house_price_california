@@ -135,7 +135,6 @@ It loads a pre-trained linear regression model, which takes as input various fea
 such as the number of rooms, the number of bedrooms, the population of the house's neighborhood, and the distance to the nearest city. 
 The app preprocesses the input data by combining some of the features and adding new features, such as the distance to the nearest city.
 """)
-st.markdown("**:book: [GitHub repository](https://github.com/matheuscamposmt/housing_prices_app)** | :heart: **My profile:** [@matheuscamposmt](https://github.com/matheuscamposmt)")
 
 data = pd.read_csv('data/housing.csv')
 max_values = data.select_dtypes(include=np.number).max()
