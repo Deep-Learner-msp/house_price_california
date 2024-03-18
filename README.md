@@ -1,40 +1,38 @@
-**<h1 align='center'> California Housing Prices Prediction App </h1>**
+# California Housing Prices Prediction App
 
-<p align="center">
-<img src="https://user-images.githubusercontent.com/69912320/234723379-21eab3af-67c2-45e7-97d1-19613de4cfc0.gif" alt="animated" />
-</p>
+![animated](https://user-images.githubusercontent.com/69912320/234723379-21eab3af-67c2-45e7-97d1-19613de4cfc0.gif)
 
-## Web app: https://housingprice.streamlit.app/
+## Web app: [https://housepricecalifornia-clark-university.streamlit.app/](https://housepricecalifornia-clark-university.streamlit.app/)
 
-## 🔍 Sobre o projeto
- 
-Neste projeto, vamos utilizar técnicas de regressão linear com a biblioteca **scikit-learn** do **Python** para prever os preços de habitações na Califórnia. O objetivo é entender quais características de um imóvel residencial (como número de quartos, localização, renda da localidade etc.) influenciam o seu valor de mercado.
+## 🔍 About the project
 
-O conjunto de dados utilizado foi [retirado do Kaggle](https://www.kaggle.com/datasets/camnugent/california-housing-prices) e é referente ao **censo de 1990**. Utilizaremos técnicas de limpeza e pré-processamento dos dados para que eles estejam prontos para a análise.
+In this project, we'll employ linear regression techniques with the **scikit-learn** library in **Python** to predict housing prices in California. The aim is to understand which characteristics of a residential property (such as number of rooms, location, local income, etc.) influence its market value.
 
-Em seguida, vamos utilizar a **regressão linear** para modelar a relação entre as características da casa e o seu preço de mercado. Para avaliar a qualidade do modelo, vamos utilizar métricas como **R²** e **RMSE**.
+The dataset used was [obtained from Kaggle](https://www.kaggle.com/datasets/camnugent/california-housing-prices) and pertains to the **1990 census**. We'll utilize data cleaning and preprocessing techniques to prepare them for analysis.
 
-Por fim, foi criado um aplicativo web, utilizando **Streamlit**, em que é possível prever o valor de um imóvel de acordo com dados fornecidos pelo usuário. Vamos analisar os resultados e entender a visão de negócio do projeto, podendo ser útil para auxiliar profissionais do mercado imobiliário, investidores e até mesmo para pessoas que estão em busca de uma casa para comprar.
+Next, we'll employ **linear regression** to model the relationship between house characteristics and their market price. To evaluate the model's quality, we'll use metrics like **R²** and **RMSE**.
 
-## Descrição dos dados
+Finally, a web application was created using **Streamlit**, where users can predict the value of a property based on provided data. We'll analyze the results and understand the project's business perspective, potentially aiding real estate professionals, investors, and even individuals in search of a home to purchase.
 
-O *dataset* possui as seguintes variáveis:
+## Data Description
 
-- **`longitude`**: longitude de um determinado conjunto de casas.
-- **`latitude`**: latitude de um determinado conjunto de casas.
-- **`housing_median_age`**: idade mediana das casas em um quarteirão.
-- **`total_rooms`**: total de quartos em um quarteirão de casas.
-- **`total_bedrooms`**: total de quartos para dormir em um quarteirão.
-- **`population`**: população da localidade em um quarteirão.
-- **`households`**: número total de famílias, grupos de pessoas residindo em uma unidades domiciliar, por um quarteirão.
-- **`median_income`**: renda mediana em um quarteirão.
-- **`ocean_proximity`**: Proximidade com o oceano (menos de uma hora para chegar no oceano; terrestre; perto do oceano; perto de uma baía; em uma ilha).
+The dataset contains the following variables:
 
-## Etapas do projeto
+- **`longitude`**: Longitude of a specific set of houses.
+- **`latitude`**: Latitude of a specific set of houses.
+- **`housing_median_age`**: Median age of houses in a block.
+- **`total_rooms`**: Total number of rooms in a housing block.
+- **`total_bedrooms`**: Total number of bedrooms in a housing block.
+- **`population`**: Population of the locality in a block.
+- **`households`**: Total number of families, groups of people residing in a housing unit, per block.
+- **`median_income`**: Median income in a block.
+- **`ocean_proximity`**: Proximity to the ocean (less than one hour to reach the ocean; inland; near ocean; near bay; on an island).
 
-1. Importar os dados e as bibliotecas
-2. Entender os dados e seus tipos
-3. Análise Exploratória
-4. *Feature Engineering*
-5. Modelagem
-6. *Deploy*
+## Project Steps
+
+1. Importing data and libraries
+2. Understanding data and their types
+3. Exploratory Data Analysis
+4. Feature Engineering
+5. Modeling
+6. Deployment
