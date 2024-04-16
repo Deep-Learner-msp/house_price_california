@@ -8,9 +8,47 @@ from geopy.geocoders import Nominatim
 import geopy.distance
 from streamlit_folium import st_folium
 from utils.combiner import CombinedAttributesAdder
+import snowflake.connector
 
-## -----------------------------------------------------------------------------------------##
-## Functions
+# Function to insert data into Snowflake table
+def insert_into_snowflake(data):
+    conn = snowflake.connector.connect(
+        user='Divyasanapathi',
+        password='Divya@0527',
+        account='BTXTKHL-HYB96323',
+        warehouse='COMPUTE_WH',
+        database='HOUSING_PRICE',
+        schema='HPA'
+    )
+
+    cursor = conn.cursor()
+
+    insert_query = """
+    INSERT INTO Prediction_Data (Address, Latitude, Longitude, Housing_Median_Age, 
+    Total_Rooms, Total_Bedrooms, Population, Households, Median_Income, Ocean_Proximity, 
+    Prediction)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """
+
+    cursor.execute(insert_query, (
+        data['address'], 
+        data['lon'],  # Access latitude from location dictionary
+        data['lat'],  # Access longitude from location dictionary
+        data['housing_median_age'], 
+        data['total_rooms'], 
+        data['total_bedrooms'], 
+        data['population'], 
+        data['households'], 
+        data['median_income'], 
+        data['ocean_proximity'], 
+        data['prediction']
+    ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+# ## -----------------------------------------------------------------------------------------##
+# ## Functions
 
 def _max_width_(prcnt_width:int = 70):
     max_width_str = f"max-width: {prcnt_width}%;"
@@ -257,12 +295,27 @@ with col1:
             "median_income": median_income,
             "ocean_proximity": ocean_proximity
             }
+
             
             input_df = pd.DataFrame([input_data])
 
             prediction = loaded_model.predict(input_df).squeeze()
+            prediction = float(prediction)
             st.session_state['prediction'] = prediction
             st.success("Done!")
+
+            # Combine location with input_data and prediction
+            combined_data = {
+                **{"address": st.session_state['address']},
+                **input_data,
+                "prediction": prediction
+            }
+
+            # Replace NaN values with None
+            combined_data = {key: (value if not pd.isna(value) else None) for key, value in combined_data.items()}
+            # Call the Snowflake insertion function with combined_data
+            insert_into_snowflake(combined_data)
+
 
     
     if st.session_state['prediction']:
