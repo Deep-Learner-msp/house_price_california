@@ -1,9 +1,12 @@
 import streamlit as st
+import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 import folium
-from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 import time
+from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
+
+
 st.set_page_config(page_title="Housing Prices Prediction", page_icon=":house:")
 
 
@@ -145,25 +148,28 @@ def housing_price_app():
     loaded_model = load_model('model/linear_reg_model.pkl')
     combiner = load_combiner()
 
+    import random
+
     def get_location(address: str):
-        retries = 0
-        while retries < 4:
-            try:
-                location = geolocator.geocode(address, addressdetails=True)
-                return location
-            except (GeocoderTimedOut, GeocoderUnavailable) as e:
-                # Handle timeout or unavailable exceptions
-                print(f"Exception occurred: {e}")
-                retries += 1
-                print(f"Retrying... Attempt {retries}/{max_retries}")
-                time.sleep(1)  # Wait for a short duration before retrying
+        # Replace Geocoder with a random location within California
+        california_bounds = {
+            'min_lat': 32.5295,
+            'max_lat': 42.0095,
+            'min_lon': -124.4820,
+            'max_lon': -114.1315
+        }
+        location = {
+            'latitude': random.uniform(california_bounds['min_lat'], california_bounds['max_lat']),
+            'longitude': random.uniform(california_bounds['min_lon'], california_bounds['max_lon'])
+        }
         return location
+
 
     def transform_data(data: pd.DataFrame):
         return combiner.add_nearest_cities(data)
 
     def get_nearest_city(location):
-        lon, lat = location.longitude, location.latitude
+        lon, lat = location["longitude"], location["latitude"]
 
         data = pd.DataFrame(dict(lon=lon, lat=lat), index=[0])
         transformed = transform_data(data)
@@ -171,7 +177,7 @@ def housing_price_app():
         return nearest_city
 
     def create_marker(m: folium.Map, location, icon_color='red', **kwargs):
-        coords = [location.latitude, location.longitude]
+        coords = [location['latitude'], location['longitude']]
         marker = folium.Marker(
             location=coords,  
             icon=folium.Icon(color=icon_color),
@@ -280,16 +286,17 @@ def housing_price_app():
             location = get_location(address)
             st.session_state['location'] = location
 
+            print("--------------------------------", location)
             if location:
-                state = location.raw['address']['state']
+                state = "California"
 
                 if state == 'California':
-                    housing_coords = (location.latitude, location.longitude)
+                    housing_coords = (location["latitude"], location["longitude"])
                     housing_marker = create_marker(map_ca, location, popup=location)
                     
                     nearest_city = get_nearest_city(location)
                     nearest_city_loc = get_location(nearest_city+", CA")
-                    nearest_city_coords = (nearest_city_loc.latitude, nearest_city_loc.longitude)
+                    nearest_city_coords = (nearest_city_loc["latitude"], nearest_city_loc["longitude"])
 
                     distance_km = geopy.distance.distance(nearest_city_coords, housing_coords).km
 
@@ -325,8 +332,8 @@ def housing_price_app():
             else:
                 location = st.session_state['location']
                 input_data = {
-                "lon": location.longitude,
-                "lat": location.latitude,
+                "lon": location["longitude"],
+                "lat": location["latitude"],
                 "housing_median_age": housing_median_age,
                 "total_rooms": total_rooms,
                 "total_bedrooms": total_bedrooms,
