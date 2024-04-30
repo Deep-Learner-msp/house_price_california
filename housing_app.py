@@ -2,7 +2,8 @@ import streamlit as st
 import yaml
 from yaml.loader import SafeLoader
 import folium
-
+from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
+import time
 st.set_page_config(page_title="Housing Prices Prediction", page_icon=":house:")
 
 
@@ -145,7 +146,18 @@ def housing_price_app():
     combiner = load_combiner()
 
     def get_location(address: str):
-        return geolocator.geocode(address, addressdetails=True)
+        retries = 0
+        while retries < 4:
+            try:
+                location = geolocator.geocode(address, addressdetails=True)
+                return location
+            except (GeocoderTimedOut, GeocoderUnavailable) as e:
+                # Handle timeout or unavailable exceptions
+                print(f"Exception occurred: {e}")
+                retries += 1
+                print(f"Retrying... Attempt {retries}/{max_retries}")
+                time.sleep(1)  # Wait for a short duration before retrying
+        return location
 
     def transform_data(data: pd.DataFrame):
         return combiner.add_nearest_cities(data)
